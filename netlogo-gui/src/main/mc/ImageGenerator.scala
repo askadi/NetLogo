@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage
 import scala.util.Failure
 import scala.util.Success
 
-import org.nlogo.api.CompilerException
+import org.nlogo.core.CompilerException
 import org.nlogo.workspace.CurrentModelOpener
 import org.nlogo.workspace.PreviewCommandsRunner
 import org.nlogo.workspace.WorkspaceFactory

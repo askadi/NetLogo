@@ -5,7 +5,7 @@ package org.nlogo.headless
 import java.io.File
 import java.io.IOException
 
-import org.nlogo.api.CompilerException
+import org.nlogo.core.CompilerException
 import org.nlogo.api.LogoException
 import org.nlogo.api.Version
 import org.nlogo.workspace.ModelsLibrary
