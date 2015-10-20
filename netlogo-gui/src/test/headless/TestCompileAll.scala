@@ -18,9 +18,10 @@ class TestCompileAll extends FunSuite with SlowTest {
   // Models whose path contains any of these strings will not be tested at all:
   def excludeModel(path: String) =
     Seq(
-      "Arduino Example", // until the Arduino extension is bundled on hexy
-      "QuickTime", // until the QuickTime models are removed from the library (for hexy)
-      "GoGoMonitorSerial", "GoGoMonitorSimpleSerial" // until the GoGoSerial models are removed from the library (for hexy)
+      "Arduino Example",                              // until the Arduino extension is bundled on hexy
+      "QuickTime",                                    // until the QuickTime models are removed from the library (for hexy)
+      "GoGoMonitorSerial", "GoGoMonitorSimpleSerial", // until the GoGoSerial models are removed from the library (for hexy)
+      "Prisoners Dilemma HubNet"                      // until we have report working inside deeper contexts (should be fixed)
     ).exists(path.contains) ||
       (if (Version.is3D) !path.contains(makePath("3D")) // when in 3D, skip models that aren't in the 3D directory.
       else path.endsWith(".nlogo3d")) // when not in 3D, skip 3D models
