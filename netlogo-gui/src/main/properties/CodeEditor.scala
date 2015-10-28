@@ -48,7 +48,7 @@ abstract class CodeEditor(accessor: PropertyAccessor[String],
   lazy val editor = new EditorArea(rows, columns,
     new Font(platformMonospacedFont, Font.PLAIN, 12), false,
     new TextListener() {def textValueChanged(e: TextEvent) {changed()}}, colorizer,
-    org.nlogo.api.I18N.gui.get _)
+    org.nlogo.core.I18N.gui.get _)
   lazy val scrollPane = new JScrollPane(editor, VERTICAL_SCROLLBAR_ALWAYS, HORIZONTAL_SCROLLBAR_AS_NEEDED)
   private val errorLabel = new EditorAreaErrorLabel(editor)
   // the panel that should collapse

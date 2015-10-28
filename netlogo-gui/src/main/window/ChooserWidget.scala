@@ -3,7 +3,8 @@
 package org.nlogo.window
 
 import org.nlogo.window.Events.{AfterLoadEvent, PeriodicUpdateEvent, InterfaceGlobalEvent}
-import org.nlogo.api.{I18N, CompilerServices, Dump, Editable}
+import org.nlogo.api.{ CompilerServices, Dump, Editable}
+import org.nlogo.core.I18N
 import org.nlogo.core.LogoList
 
 class ChooserWidget(compiler: CompilerServices) extends Chooser(compiler) with Editable with

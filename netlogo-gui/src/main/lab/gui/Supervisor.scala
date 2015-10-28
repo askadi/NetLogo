@@ -8,7 +8,8 @@ import org.nlogo.window.{EditDialogFactoryInterface,GUIWorkspace}
 import org.nlogo.nvm.{EngineException, Workspace}
 import org.nlogo.workspace.{CurrentModelOpener, WorkspaceFactory}
 import org.nlogo.nvm.LabInterface.ProgressListener
-import org.nlogo.api.{I18N, LogoException}
+import org.nlogo.api.{ LogoException}
+import org.nlogo.core.I18N
 import org.nlogo.core.CompilerException
 
 object Supervisor {

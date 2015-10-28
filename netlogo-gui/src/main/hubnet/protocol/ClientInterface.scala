@@ -2,7 +2,8 @@
 
 package org.nlogo.hubnet.protocol
 
-import org.nlogo.api.{ CompilerServices, Shape}
+import org.nlogo.api.{ CompilerServices}
+import org.nlogo.core.Shape
 import org.nlogo.core.LogoList
 
 /**

@@ -8,7 +8,8 @@ import org.nlogo.window.{WorldViewSettings, OriginConfiguration}
 import java.awt.{GridBagLayout, BorderLayout, GridBagConstraints}
 import javax.swing.{JLabel, JComboBox, JPanel}
 import java.awt.event.{ItemListener, ItemEvent}
-import org.nlogo.api.{I18N, Editable, CompilerServices}
+import org.nlogo.api.{ Editable, CompilerServices}
+import org.nlogo.core.I18N
 import org.nlogo.core.TokenType
 import collection.JavaConverters._
 

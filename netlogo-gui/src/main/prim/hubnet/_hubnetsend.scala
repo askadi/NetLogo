@@ -28,7 +28,7 @@ class _hubnetsend extends Command {
             case _ =>
               throw new EngineException(
                 context, this,
-                "HUBNET-SEND expected " + TypeNames.aName(Syntax.StringType | Syntax.ListType)
+                "HUBNET-SEND expected " + TypeNames.aName((Syntax.StringType | Syntax.ListType): Int)
                 + " of strings as the first input, but one item is the "
                 + TypeNames.name(node) + " " + Dump.logoObject(node) + " instead")
           }

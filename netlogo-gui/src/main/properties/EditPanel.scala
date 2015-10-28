@@ -6,7 +6,8 @@ import org.nlogo.editor.Colorizer
 import org.nlogo.window.WidgetWrapperInterface
 import javax.swing.{JPanel, JLabel}
 import java.awt.{Component, Insets, GridBagConstraints, Dimension, GridBagLayout, BorderLayout}
-import org.nlogo.api.{I18N, CompilerServices, Editable, Property}
+import org.nlogo.api.{ CompilerServices, Editable, Property}
+import org.nlogo.core.I18N
 import org.nlogo.core.LogoList
 import org.nlogo.core.CompilerException
 import org.nlogo.core.TokenType

@@ -2,10 +2,12 @@
 
 package org.nlogo.prim
 
+import org.nlogo.core.AgentKind
 import scala.collection.mutable
 
 import org.nlogo.agent.{ Agent, AgentSet, ArrayAgentSet, Patch, Turtle }
-import org.nlogo.api.{ I18N, Syntax }
+import org.nlogo.api.{ Syntax }
+import org.nlogo.core.I18N
 import org.nlogo.nvm.{ ArgumentTypeException, Context, EngineException, Reporter }
 
 class _breedon(breedName: String) extends Reporter {
@@ -69,7 +71,7 @@ class _breedon(breedName: String) extends Reporter {
           Syntax.TurtlesetType | Syntax.PatchsetType,
           agentOrSet)
     }
-    new ArrayAgentSet(classOf[Turtle], resultList.toArray, world)
+    new ArrayAgentSet(AgentKind.Turtle, resultList.toArray)
   }
 
   def report_2(context: Context, sourceSet: AgentSet): AgentSet = {
@@ -103,7 +105,7 @@ class _breedon(breedName: String) extends Reporter {
         Syntax.TurtlesetType | Syntax.PatchsetType,
         sourceSet)
     }
-    new ArrayAgentSet(classOf[Turtle], resultList.toArray, world)
+    new ArrayAgentSet(AgentKind.Turtle, resultList.toArray)
   }
 
   def report_3(context: Context, agent: Agent): AgentSet = {
@@ -134,7 +136,7 @@ class _breedon(breedName: String) extends Reporter {
           Syntax.TurtlesetType | Syntax.PatchsetType,
           agent)
     }
-    new ArrayAgentSet(classOf[Turtle], resultList.toArray, world)
+    new ArrayAgentSet(AgentKind.Turtle, resultList.toArray)
   }
 
   def report_4(context: Context, turtle: Turtle): AgentSet = {
@@ -149,7 +151,7 @@ class _breedon(breedName: String) extends Reporter {
       if (t.getBreed == breed)
         resultList += t
     }
-    new ArrayAgentSet(classOf[Turtle], resultList.toArray, world)
+    new ArrayAgentSet(AgentKind.Turtle, resultList.toArray)
   }
 
   def report_5(context: Context, patch: Patch): AgentSet = {
@@ -161,6 +163,6 @@ class _breedon(breedName: String) extends Reporter {
       if (t.getBreed == breed)
         resultList += t
     }
-    new ArrayAgentSet(classOf[Turtle], resultList.toArray, world)
+    new ArrayAgentSet(AgentKind.Turtle, resultList.toArray)
   }
 }

@@ -16,7 +16,7 @@ class AggregateProceduresTab(colorizer: Colorizer[TokenType]) extends javax.swin
     new java.awt.event.TextListener() {
         override def textValueChanged(e: java.awt.event.TextEvent) { } },
     colorizer,
-    org.nlogo.api.I18N.gui.get _)
+    org.nlogo.core.I18N.gui.get _)
   text.setBorder(
     javax.swing.BorderFactory.createEmptyBorder(4, 7, 4, 7))
   text.setEditable(false)

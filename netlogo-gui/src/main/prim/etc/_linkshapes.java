@@ -2,8 +2,8 @@
 
 package org.nlogo.prim.etc;
 
-import org.nlogo.api.LogoListBuilder;
-import org.nlogo.api.Shape;
+import org.nlogo.core.LogoList$;
+import org.nlogo.core.Shape;
 import org.nlogo.api.Syntax;
 import org.nlogo.nvm.Context;
 import org.nlogo.nvm.Reporter;
@@ -19,11 +19,6 @@ public final strictfp class _linkshapes
 
   @Override
   public Object report(Context context) {
-    List<Shape> shapes = world.linkShapeList().getShapes();
-    LogoListBuilder result = new LogoListBuilder();
-    for (Shape shape : shapes) {
-      result.add(shape.getName());
-    }
-    return result.toLogoList();
+    return LogoList$.MODULE$.fromIterator(world.linkShapeList().shapes().iterator());
   }
 }

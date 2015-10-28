@@ -9,7 +9,6 @@ import org.nlogo.core.Program
 
 class AssemblerTests extends FunSuite {
   def compile(keyword: String, source: String): Procedure = {
-    implicit val tokenizer = Compiler.Tokenizer2D
     val program = Program.empty()
     val procdefs = TestHelper.compiledProcedures(keyword + " foo " + source + "\nend", program)
     assertResult(1)(procdefs.size)

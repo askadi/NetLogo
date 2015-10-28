@@ -2,9 +2,10 @@
 
 package org.nlogo.shape.editor;
 
-import org.nlogo.api.I18N;
-import org.nlogo.api.Shape;
-import org.nlogo.api.ShapeList;
+import org.nlogo.core.AgentKindJ;
+import org.nlogo.core.I18N;
+import org.nlogo.core.Shape;
+import org.nlogo.core.ShapeList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +28,14 @@ public strictfp class ImportDialog   // public for DeltaTick - ST 12/2/11
     super(frame, "Library", true);
     this.manager = manager;
 
-    List<Shape> importedShapes = shapeParser.parseShapes(shapes, version);
-    if (importedShapes == null) {
-      list = null;
-      // we should have already displayed an error
-      dispose();
-      return;
-    }
-    List<Shape> foreignShapes = ShapeList.sortShapes(importedShapes);
+    scala.collection.Seq<Shape> foreignShapes =
+      ShapeList.sortShapes(shapeParser.parseShapes(shapes, version));
     if (foreignShapes == null) {
       list = null;
       dispose();          // Importing failed, so quit
       return;
     } else {
-      ShapeList shapeList = new ShapeList();
-      shapeList.replaceShapes(foreignShapes);
+      ShapeList shapeList = new ShapeList(AgentKindJ.Turtle());
       list = new DrawableList(shapeList, null, 10, 34);
       list.setParent(this);
       list.setCellRenderer(new ShapeCellRenderer(list));
@@ -121,10 +115,10 @@ public strictfp class ImportDialog   // public for DeltaTick - ST 12/2/11
       shape = list.getShape(selected[i]);
 
       // If the shape exists, give the user the chance to overwrite or rename
-      while (manager.shapesList().exists(shape.getName())) {
+      while (manager.shapesList().exists(shape.name())) {
         int choice = javax.swing.JOptionPane.showOptionDialog
             (this,
-                "A shape with the name \"" + shape.getName() + "\" already exists in this model.\n" +
+                "A shape with the name \"" + shape.name() + "\" already exists in this model.\n" +
                     "Do you want to replace the existing shape or rename the imported one?",
                 "Import",
                 javax.swing.JOptionPane.YES_NO_CANCEL_OPTION,
@@ -142,7 +136,7 @@ public strictfp class ImportDialog   // public for DeltaTick - ST 12/2/11
           // if the user cancels the inputdialog, then name could
           // be null causing a nullpointerexception later on
           if (name != null) {
-            shape.setName(name);
+            shape.name_$eq(name);
           }
         } else {
           return;
@@ -168,7 +162,7 @@ public strictfp class ImportDialog   // public for DeltaTick - ST 12/2/11
   }
 
   public interface ShapeParser {
-    List<Shape> parseShapes(String[] shapes, String version);
+    scala.collection.Seq<Shape> parseShapes(String[] shapes, String version);
   }
 
   @Override

@@ -2,8 +2,8 @@
 
 package org.nlogo.shape.editor;
 
-import org.nlogo.api.Shape;
-import org.nlogo.api.ShapeList;
+import org.nlogo.core.Shape;
+import org.nlogo.core.ShapeList;
 import org.nlogo.shape.ShapeChangeListener;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public strictfp class DrawableList
     implements EditorDialog.VectorShapeContainer {
   javax.swing.DefaultListModel<String> listModel;
   final ShapeList shapeList;
-  List<Shape> shapes;
+  List<Shape> shapes = new ArrayList<Shape>();
   private final ShapeChangeListener shapeChangeListener;
   private java.awt.Component parent;
 
@@ -37,24 +37,26 @@ public strictfp class DrawableList
   //  Make sure the list of available shapes is up to date
   public void update() {
     listModel.clear();
-    shapes = shapeList.getShapes();
-    for (Shape shape : shapes) {
-      listModel.addElement(shape.getName());
+    scala.collection.Seq<Shape> shapeSeq = shapeList.shapes();
+    for (int i = 0; i < shapeSeq.length(); i++) {
+      Shape shape = shapeSeq.apply(i);
+      shapes.add(shape);
+      listModel.addElement(shape.name());
     }
   }
 
   public void update(Shape originalShape, Shape newShape) {
     // If you changed the name of the shape, get rid of the shape
     // with the old name
-    if ((!originalShape.getName().equals(newShape.getName())) &&
-        (!ShapeList.isDefaultShapeName(originalShape.getName()))) {
+    if ((!originalShape.name().equals(newShape.name())) &&
+        (!ShapeList.isDefaultShapeName(originalShape.name()))) {
       removeShape(originalShape);
     }
 
     addShape(newShape);
 
     update(); // Update the shapes manager's list
-    selectShapeName(newShape.getName());
+    selectShapeName(newShape.name());
   }
 
   // Select a shape in the list
@@ -88,8 +90,8 @@ public strictfp class DrawableList
     return shapes.get(index);
   }
 
-  public Set<String> getShapeNames() {
-    return shapeList.getNames();
+  public scala.collection.Set<String> getShapeNames() {
+    return shapeList.names();
   }
 
   public boolean exists(String name) {
@@ -127,7 +129,7 @@ public strictfp class DrawableList
     for (int i = 0; i < selected.length; ++i)      // Remove the selected shapes from the model
     {
       // Don't delete the default turtle
-      if (!ShapeList.isDefaultShapeName(shapes.get(selected[i]).getName())) {
+      if (!ShapeList.isDefaultShapeName(shapes.get(selected[i]).name())) {
         Shape shape = shapes.get(selected[i]);
         deletedShapes.add(shape);
         removeShape(shape);
@@ -136,7 +138,7 @@ public strictfp class DrawableList
 
     for (int i = selected.length - 1; i >= 0; --i)    // Update the shapes manager to reflect those deletions
     {
-      if (!(ShapeList.isDefaultShapeName(shapes.get(selected[i]).getName()))) {
+      if (!(ShapeList.isDefaultShapeName(shapes.get(selected[i]).name()))) {
         shapes.remove(selected[i]);
         listModel.remove(selected[i]);
       }

@@ -4,7 +4,8 @@ package org.nlogo.headless
 
 import org.nlogo.util.MockSuite
 import org.nlogo.api.{ModelReader, Version, ViewSettings, Perspective}
-import org.nlogo.shape.{LinkShape, VectorShape}
+import org.nlogo.shape.ShapeConverter
+import org.nlogo.core.Model
 import org.nlogo.util.WorldType
 
 trait TestUsingWorkspace extends MockSuite {
@@ -46,8 +47,8 @@ trait TestUsingWorkspace extends MockSuite {
     try {
       workspace.initForTesting(-radius, radius, -radius, radius, HeadlessWorkspace.TestDeclarations)
       workspace.changeTopology(worldType.xWrap, worldType.yWrap)
-      workspace.world.turtleShapeList.replaceShapes(VectorShape.parseShapes(ModelReader.defaultShapes, Version.version))
-      workspace.world.linkShapeList.replaceShapes(LinkShape.parseShapes(ModelReader.defaultLinkShapes, Version.version))
+      workspace.world.turtleShapeList.replaceShapes(Model.defaultShapes.map(ShapeConverter.baseVectorShapeToVectorShape))
+      workspace.world.linkShapeList.replaceShapes(Model.defaultLinkShapes.map(ShapeConverter.baseLinkShapeToLinkShape))
       f(workspace)
     }
     finally {workspace.dispose()}

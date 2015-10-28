@@ -6,8 +6,12 @@ import org.nlogo.swing.Implicits._
 import javax.swing.{JScrollPane, SwingConstants, Box, BoxLayout, JPanel, JLabel, JDialog, JButton}
 import java.awt.{Font, Component}
 import javax.swing.event.{ListSelectionEvent, MouseInputAdapter, ListSelectionListener}
-import org.nlogo.shape.{VectorShape, ModelSectionReader}
-import org.nlogo.api.{I18N, ShapeList}
+import org.nlogo.shape.{ShapeConverter, ModelSectionReader, LinkShape, VectorShape}
+import org.nlogo.core.{ Shape => CoreShape }
+import org.nlogo.core.ShapeParser.parseVectorShapes
+
+import org.nlogo.core.ShapeList
+import org.nlogo.core.I18N
 
 abstract class ManagerDialog(parentFrame: java.awt.Frame,
                              sectionReader: ModelSectionReader,
@@ -36,7 +40,7 @@ abstract class ManagerDialog(parentFrame: java.awt.Frame,
       setEnabled(true)
       val shape = ManagerDialog.this.shapesList.getOneSelected
       // Don't delete the default turtle
-      if (shape != null && ShapeList.isDefaultShapeName(shape.getName)) setEnabled(false)
+      if (shape != null && ShapeList.isDefaultShapeName(shape.name)) setEnabled(false)
     })
     setEnabled(false)
   }
@@ -141,7 +145,9 @@ abstract class ManagerDialog(parentFrame: java.awt.Frame,
     shapesList.requestFocus()
   }
 
-  def parseShapes(shapes: Array[String], version: String) = VectorShape.parseShapes(shapes, version)
+  def parseShapes(shapes: Array[String], version: String): Seq[CoreShape] = {
+    parseVectorShapes(shapes).map(ShapeConverter.baseVectorShapeToVectorShape)
+  }
 
   // Listen for changes in list selection, and make the edit and delete buttons inoperative if necessary
   def valueChanged(e: ListSelectionEvent) {
