@@ -8,7 +8,7 @@ import org.nlogo.api.World
 import org.nlogo.api.Perspective
 import org.nlogo.api.Agent
 
-private class ShapeRenderer(world: World) {
+private[render] class ShapeRenderer(world: World) {
 
   // We use a stencil buffer to highlight turtles. Some graphics cards, including the NVIDIA GeForce
   // FX 5200 Ultra, don't seem to support a stencil buffer, so we keep track of whether this card

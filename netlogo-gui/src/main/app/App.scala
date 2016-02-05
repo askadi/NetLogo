@@ -533,6 +533,7 @@ class App extends
           java.net.URLDecoder.decode(commandLineURL.reverse takeWhile (_ != '/') reverse, "UTF-8"), "Starting...", ModelType.Library)
 
         import org.nlogo.awt.EventQueue, org.nlogo.swing.Implicits.thunk2runnable
+
         Option(System.getProperty(ImportRawWorldURLProp)) map {
           url => // `io.Source.fromURL(url).bufferedReader` steps up to bat and... manages to fail gloriously here! --JAB (8/22/12)
             import java.io.{ BufferedReader, InputStreamReader }, java.net.URL
@@ -542,7 +543,7 @@ class App extends
                 workspace.view.dirty()
                 workspace.view.repaint()
             }
-        } getOrElse (Option(System.getProperty(ImportWorldURLProp)) map {
+        } orElse (Option(System.getProperty(ImportWorldURLProp)) map {
           url =>
 
             import java.util.zip.GZIPInputStream, java.io.{ ByteArrayInputStream, InputStreamReader }, scala.io.{ Codec, Source }
@@ -663,7 +664,7 @@ class App extends
   /**
    * Internal use only.
    */
-  def handle(e: Events.SwitchedTabsEvent) {
+  final def handle(e: Events.SwitchedTabsEvent) {
     if(e.newTab == tabs.interfaceTab){ monitorManager.showAll(); frame.toFront() }
     else if(e.oldTab == tabs.interfaceTab) monitorManager.hideAll()
   }
