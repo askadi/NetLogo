@@ -84,13 +84,19 @@ object PreviewCommandsRunner {
 
     val ws = initWorkspace(workspaceFactory, openModelIn, previewCommands)
 
-    ws.previewCommands match {
-      case compilableCommands: PreviewCommands.Compilable =>
-        val procedure = ws.compileCommands(compilableCommands.source)
-        new PreviewCommandsRunner(ws, procedure)
-      case _ => // non-compilable preview commands
+    try {
+      ws.previewCommands match {
+        case compilableCommands: PreviewCommands.Compilable =>
+          val procedure = ws.compileCommands(compilableCommands.source)
+          new PreviewCommandsRunner(ws, procedure)
+        case _ => // non-compilable preview commands
+          ws.dispose()
+          throw new NonCompilableCommandsException
+      }
+    } catch {
+      case e: CompilerException =>
         ws.dispose()
-        throw new NonCompilableCommandsException
+        throw e
     }
   }
 
@@ -101,16 +107,18 @@ class PreviewCommandsRunner private (
   procedure: Procedure) {
 
   lazy val previewImage: Try[BufferedImage] = Try {
-    val jobOwner = new SimpleJobOwner(this.getClass.getName, workspace.world.mainRNG, AgentKind.Observer)
-    try
+    try {
+      val jobOwner = new SimpleJobOwner(this.getClass.getName, workspace.world.mainRNG, AgentKind.Observer)
+      try
       workspace.evaluateCommands(jobOwner, "startup", workspace.world.observers, true)
-    catch {
-      case e: CompilerException => /* ignore */
+      catch {
+        case e: CompilerException => /* ignore */
+      }
+      workspace.runCompiledCommands(jobOwner, procedure)
+      workspace.exportView
+    } finally {
+      workspace.dispose()
     }
-    workspace.runCompiledCommands(jobOwner, procedure)
-    val image = workspace.exportView
-    workspace.dispose()
-    image
   }
 
   trait Runnable extends java.lang.Runnable {
