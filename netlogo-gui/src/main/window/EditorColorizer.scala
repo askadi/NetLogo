@@ -85,8 +85,6 @@ class EditorColorizer(compiler: CompilerServices) extends Colorizer[TokenType] {
         SyntaxColors.COMMAND_COLOR
       case TokenType.Reporter =>
         SyntaxColors.REPORTER_COLOR
-      case TokenType.Ident =>
-        SyntaxColors.REPORTER_COLOR
       case TokenType.Keyword =>
         SyntaxColors.KEYWORD_COLOR
       case TokenType.Comment =>

@@ -5,6 +5,7 @@ package org.nlogo.compiler
 import org.nlogo.api.{ NetLogoLegacyDialect, NetLogoThreeDDialect, NumberParser, SourceOwner, TokenizerInterface, World }
 import org.nlogo.core.CompilerUtilitiesInterface
 import org.nlogo.core.Dialect
+import org.nlogo.core.Femto
 import org.nlogo.core.FrontEndInterface
 import org.nlogo.core.Program
 import org.nlogo.core.CompilerException
@@ -15,7 +16,6 @@ import org.nlogo.parse.Namer
 import org.nlogo.nvm.{ CompilerInterface, CompilerResults, ImportHandler, Procedure, Workspace }
 import org.nlogo.core.CompilationEnvironment
 import org.nlogo.api.ExtensionManager
-import org.nlogo.util.Femto
 
 import scala.collection.immutable.ListMap
 import scala.collection.JavaConversions._
@@ -27,11 +27,14 @@ class Compiler(dialect: Dialect) extends CompilerInterface {
 
   val defaultDialect = dialect
 
-  val compilerUtilities = Femto.scalaSingleton(classOf[CompilerUtilitiesInterface], "org.nlogo.parse.CompilerUtilities")
-  private val frontEnd = Femto.scalaSingleton(classOf[FrontEndInterface], "org.nlogo.parse.FrontEnd")
+  val compilerUtilities =
+    Femto.scalaSingleton[CompilerUtilitiesInterface]("org.nlogo.parse.CompilerUtilities")
+
+  private val frontEnd =
+    Femto.scalaSingleton[FrontEndInterface]("org.nlogo.parse.FrontEnd")
 
   // tokenizer singletons
-  val parserTokenizer = Femto.scalaSingleton(classOf[org.nlogo.core.TokenizerInterface], "org.nlogo.lex.Tokenizer")
+  val parserTokenizer = Femto.scalaSingleton[org.nlogo.core.TokenizerInterface]("org.nlogo.lex.Tokenizer")
 
   // some private helpers
   private type ProceduresMap = java.util.Map[String, Procedure]
@@ -174,8 +177,6 @@ class Compiler(dialect: Dialect) extends CompilerInterface {
 
   // this is for the syntax-highlighting editor
   def tokenizeForColorization(source: String, extensionManager: ExtensionManager): Array[Token] =
-    // at the moment, this doesn't take Extensions into account
-    // that will need to be added later - RG 10/29/15
-    parserTokenizer.tokenizeString(source).map(Namer.basicNamer(dialect.tokenMapper)).toArray
+    frontEnd.tokenizeForColorization(source, defaultDialect, extensionManager).toArray
 
 }
