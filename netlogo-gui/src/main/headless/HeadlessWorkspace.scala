@@ -11,7 +11,7 @@ import org.nlogo.api.{ Version, RendererInterface,
                        WorldDimensions3D, AggregateManagerInterface,
                        ModelReader, LogoException, SimpleJobOwner,
                        HubNetInterface, CommandRunnable, ReporterRunnable }
-import org.nlogo.core.{ AgentKind, CompilerException, WorldDimensions}
+import org.nlogo.core.{ AgentKind, CompilerException, WorldDimensions, UpdateMode}
 import org.nlogo.agent.{ World, World3D }
 import org.nlogo.nvm.{ LabInterface,
                        Workspace, DefaultCompilerServices, CompilerInterface }
@@ -110,7 +110,7 @@ object HeadlessWorkspace {
 class HeadlessWorkspace(
   _world: World,
   val compiler: CompilerInterface,
-  val renderer: RendererInterface,
+  override val renderer: RendererInterface,
   val aggregateManager: AggregateManagerInterface,
   hubNetManagerFactory: AbstractWorkspace.HubNetManagerFactory)
 extends AbstractWorkspaceScala(_world, hubNetManagerFactory)
@@ -291,7 +291,7 @@ with org.nlogo.api.ViewSettings {
   override def renderPerspective = true
   override def viewOffsetX = world.observer.followOffsetX
   override def viewOffsetY = world.observer.followOffsetY
-  override def updateMode(updateMode: Workspace.UpdateMode) { }
+  override def updateMode(updateMode: UpdateMode) { }
   override def setSize(x: Int, y: Int) { }
   override def clearTurtles() {
     if (!compilerTestingMode)
@@ -561,7 +561,7 @@ with org.nlogo.api.ViewSettings {
    */
   @throws(classOf[CompilerException])
   @throws(classOf[LogoException])
-  def command(source: String) {
+  override def command(source: String) {
     evaluateCommands(defaultOwner, source, true)
     if (lastLogoException != null) {
       val ex = lastLogoException
@@ -583,7 +583,7 @@ with org.nlogo.api.ViewSettings {
    */
   @throws(classOf[CompilerException])
   @throws(classOf[LogoException])
-  def report(source: String): AnyRef = {
+  override def report(source: String): AnyRef = {
     val result = evaluateReporter(defaultOwner, source, world.observer)
     if (lastLogoException != null) {
       val ex = lastLogoException

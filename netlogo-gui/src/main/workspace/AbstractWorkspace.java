@@ -15,6 +15,7 @@ import org.nlogo.core.File;
 import org.nlogo.core.CompilerException;
 import org.nlogo.core.Token;
 import org.nlogo.core.TokenType;
+import org.nlogo.core.UpdateMode;
 import org.nlogo.agent.Importer;
 import org.nlogo.nvm.Activation;
 import org.nlogo.nvm.Command;
@@ -150,10 +151,6 @@ public abstract strictfp class AbstractWorkspace
       hubNetManager.disconnect();
     }
   }
-
-  /// headless?
-
-  public abstract boolean isHeadless();
 
   /**
    * Displays a warning to the user, and determine whether to continue.
@@ -424,13 +421,13 @@ public abstract strictfp class AbstractWorkspace
   /// misc
 
   // we shouldn't need "Workspace." lampsvn.epfl.ch/trac/scala/ticket/1409 - ST 4/6/09
-  private Workspace.UpdateMode updateMode = Workspace.UpdateMode.CONTINUOUS;
+  private UpdateMode updateMode = UpdateMode.Continuous;
 
-  public Workspace.UpdateMode updateMode() {
+  public UpdateMode updateMode() {
     return updateMode;
   }
 
-  public void updateMode(Workspace.UpdateMode updateMode) {
+  public void updateMode(UpdateMode updateMode) {
     this.updateMode = updateMode;
   }
 
@@ -457,7 +454,7 @@ public abstract strictfp class AbstractWorkspace
   // we shouldn't need "Workspace." lampsvn.epfl.ch/trac/scala/ticket/1409 - ST 4/6/09
   public void outputObject(Object object, Object owner,
                            boolean addNewline, boolean readable,
-                           Workspace.OutputDestination destination)
+                           OutputDestination destination)
       throws LogoException {
     org.nlogo.agent.OutputObject oo =
         new org.nlogo.agent.OutputObject

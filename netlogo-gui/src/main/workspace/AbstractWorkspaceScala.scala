@@ -15,7 +15,7 @@ import AbstractWorkspaceTraits._
 
 abstract class AbstractWorkspaceScala(private val _world: World, hubNetManagerFactory: HubNetManagerFactory)
   extends AbstractWorkspace(_world, hubNetManagerFactory)
-  with Plotting with Exporting with Evaluating {
+  with Plotting with Exporting with Evaluating with APIConformant {
 
   var previewCommands: PreviewCommands = PreviewCommands.Default
 
@@ -223,5 +223,31 @@ object AbstractWorkspaceTraits {
     @throws(classOf[CompilerException])
     def readFromString(string: String): AnyRef =
       evaluator.readFromString(string)
+  }
+
+  trait APIConformant { this: AbstractWorkspace =>
+    // Members declared in org.nlogo.api.Controllable
+    def command(source: String): Unit = ???
+    def report(source: String): AnyRef = ???
+
+    // Members declared in org.nlogo.api.ViewSettings
+    def drawSpotlight: Boolean = ???
+    def fontSize: Int = ???
+    def perspective: org.nlogo.api.Perspective = ???
+    def renderPerspective: Boolean = ???
+    def viewHeight: Double = ???
+    def viewOffsetX: Double = ???
+    def viewOffsetY: Double = ???
+    def viewWidth: Double = ???
+
+    // Members declared in org.nlogo.api.Workspace
+    def benchmark(minTime: Int,maxTime: Int): Unit = ???
+    def graphicsChecksum: String = ???
+    def openModel(model: org.nlogo.core.Model): Unit = ???
+    override def outputObject(obj: AnyRef,owner: AnyRef,addNewline: Boolean,readable: Boolean,destination: org.nlogo.api.OutputDestination): Unit = ???
+
+    def previewCommandsString: String = ???
+    def renderer: org.nlogo.api.RendererInterface = ???
+    def worldChecksum: String = ???
   }
 }

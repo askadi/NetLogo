@@ -15,6 +15,7 @@ import org.nlogo.core.AgentKind;
 import org.nlogo.core.AgentKindJ;
 import org.nlogo.core.CompilerException;
 import org.nlogo.core.I18N;
+import org.nlogo.core.UpdateMode;
 import org.nlogo.api.AgentFollowingPerspective;
 import org.nlogo.api.CommandRunnable;
 import org.nlogo.api.LogoException;
@@ -572,7 +573,7 @@ public abstract strictfp class GUIWorkspace // can't be both abstract and strict
   // intermittent compile failures on this line since upgrading to
   // Scala 2.8.0.RC1 - ST 4/16/10
   @Override
-  public void updateMode(Workspace.UpdateMode updateMode) {
+  public void updateMode(UpdateMode updateMode) {
     super.updateMode(updateMode);
     updateManager().recompute();
   }
