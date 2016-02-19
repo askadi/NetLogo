@@ -16,6 +16,7 @@ import org.nlogo.core.CompilerException;
 import org.nlogo.core.Token;
 import org.nlogo.core.TokenType;
 import org.nlogo.core.UpdateMode;
+import org.nlogo.core.UpdateModeJ;
 import org.nlogo.agent.Importer;
 import org.nlogo.nvm.Activation;
 import org.nlogo.nvm.Command;
@@ -73,13 +74,6 @@ public abstract strictfp class AbstractWorkspace
 
   public WeakHashMap<Job, WeakHashMap<Agent, WeakHashMap<Command, MutableLong>>> lastRunTimes() {
     return lastRunTimes;
-  }
-
-  // for _thunkdidfinish (says that a thunk finished running without having stop called)
-  private final WeakHashMap<Activation, Boolean> completedActivations = new WeakHashMap<Activation, Boolean>();
-
-  public WeakHashMap<Activation, Boolean> completedActivations() {
-    return completedActivations;
   }
 
   /**
@@ -421,7 +415,7 @@ public abstract strictfp class AbstractWorkspace
   /// misc
 
   // we shouldn't need "Workspace." lampsvn.epfl.ch/trac/scala/ticket/1409 - ST 4/6/09
-  private UpdateMode updateMode = UpdateMode.Continuous;
+  private UpdateMode updateMode = UpdateModeJ.CONTINUOUS();
 
   public UpdateMode updateMode() {
     return updateMode;
@@ -450,32 +444,6 @@ public abstract strictfp class AbstractWorkspace
   public abstract void breathe();
 
   /// output
-
-  // we shouldn't need "Workspace." lampsvn.epfl.ch/trac/scala/ticket/1409 - ST 4/6/09
-  public void outputObject(Object object, Object owner,
-                           boolean addNewline, boolean readable,
-                           OutputDestination destination)
-      throws LogoException {
-    org.nlogo.agent.OutputObject oo =
-        new org.nlogo.agent.OutputObject
-            (
-                // caption
-                owner instanceof org.nlogo.agent.Agent
-                    ? Dump.logoObject(owner)
-                    : "",
-                // message
-                (readable && !(owner instanceof org.nlogo.agent.Agent)
-                    ? " "
-                    : "")
-                    + Dump.logoObject(object, readable, false),
-                // other
-                addNewline, false);
-    if (destination == OutputDestination.FILE) {
-      fileManager.writeOutputObject(oo);
-    } else {
-      sendOutput(oo, destination == OutputDestination.OUTPUT_AREA);
-    }
-  }
 
   // called from job thread - ST 10/1/03
   protected abstract void sendOutput(org.nlogo.agent.OutputObject oo,

@@ -1,12 +1,10 @@
 // (C) Uri Wilensky. https://github.com/NetLogo/NetLogo
 
-package org.nlogo.headless
+package org.nlogo.workspace
 
 import org.nlogo.api.{ PreviewCommands, Workspace }
-import org.nlogo.workspace.AbstractWorkspaceScala
 import org.nlogo.util.HexString.toHexString
 import java.io.PrintWriter
-import ChecksumsAndPreviews.Previews.needsManualPreview
 
 object Checksummer {
   def initModelForChecksumming(workspace: Workspace) {

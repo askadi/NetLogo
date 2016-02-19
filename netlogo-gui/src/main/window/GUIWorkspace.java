@@ -16,6 +16,7 @@ import org.nlogo.core.AgentKindJ;
 import org.nlogo.core.CompilerException;
 import org.nlogo.core.I18N;
 import org.nlogo.core.UpdateMode;
+import org.nlogo.core.UpdateModeJ;
 import org.nlogo.api.AgentFollowingPerspective;
 import org.nlogo.api.CommandRunnable;
 import org.nlogo.api.LogoException;
@@ -416,6 +417,16 @@ public abstract strictfp class GUIWorkspace // can't be both abstract and strict
     throw new UnsupportedOperationException();
   }
 
+  @Override
+  public void openModel(org.nlogo.core.Model model) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public RendererInterface renderer() {
+    return view.renderer;
+  }
+
   // called from the job thread
   public void reload() {
     new org.nlogo.window.Events.AppEvent
@@ -660,7 +671,7 @@ public abstract strictfp class GUIWorkspace // can't be both abstract and strict
   @Override
   public void breathe() {
     jobManager.maybeRunSecondaryJobs();
-    if (updateMode() == UpdateMode.CONTINUOUS) {
+    if (updateMode().equals(UpdateModeJ.CONTINUOUS())) {
       updateManager().pseudoTick();
       updateDisplay(true);
     }

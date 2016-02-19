@@ -67,16 +67,16 @@ object ModelLoader {
           new LoadBeginEvent())
 
         val sectionTypes = List(
-          ModelSection.PreviewCommands,
-          ModelSection.Code,
-          ModelSection.Info,
-          ModelSection.Interface,
-          ModelSection.SystemDynamics,
-          ModelSection.TurtleShapes,
-          ModelSection.BehaviorSpace,
-          ModelSection.HubNetClient,
-          ModelSection.LinkShapes,
-          ModelSection.ModelSettings)
+          ModelSection.PreviewCommands, // +
+          ModelSection.Code, // +
+          ModelSection.Info, // +
+          ModelSection.Interface, // ~
+          ModelSection.SystemDynamics, // -
+          ModelSection.TurtleShapes,   // +
+          ModelSection.BehaviorSpace,  // +
+          ModelSection.HubNetClient,   // -
+          ModelSection.LinkShapes,     // +
+          ModelSection.ModelSettings)  // - (This is snap to grid)
 
         val loadSectionEvents = sectionTypes.map { section => // kludgey - ST 2/11/08
           val lines = (section, map.get(section).length) match {

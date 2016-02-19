@@ -3,6 +3,7 @@
 package org.nlogo.window;
 
 import org.nlogo.core.CompilerException;
+import org.nlogo.core.UpdateMode;
 import org.nlogo.api.Editable;
 import org.nlogo.core.I18N;
 import org.nlogo.api.Property;
@@ -329,11 +330,11 @@ public abstract strictfp class WorldViewSettings
     return workspace.world.patchSize();
   }
 
-  public Workspace.UpdateMode updateMode() {
+  public UpdateMode updateMode() {
     return workspace.updateMode();
   }
 
-  public void updateMode(Workspace.UpdateMode updateMode) {
+  public void updateMode(UpdateMode updateMode) {
     workspace.updateMode(updateMode);
   }
 

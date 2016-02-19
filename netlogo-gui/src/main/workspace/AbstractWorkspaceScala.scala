@@ -2,12 +2,14 @@
 
 package org.nlogo.workspace
 
-import org.nlogo.agent.{World, Agent, Observer, AbstractExporter, AgentSet, ArrayAgentSet}
-import org.nlogo.api.{PlotInterface, Dump, CommandLogoThunk, ReporterLogoThunk, JobOwner, SimpleJobOwner, PreviewCommands}
+import org.nlogo.agent.{World, Agent, Observer, AbstractExporter, AgentSet, ArrayAgentSet, OutputObject}
+import org.nlogo.api.{ PlotInterface, Dump, CommandLogoThunk, ReporterLogoThunk, JobOwner, OutputDestination, SimpleJobOwner, PreviewCommands}
 import org.nlogo.core.{ AgentKind, CompilerException }
-import org.nlogo.nvm.{Instruction, EngineException, Context, Procedure}
+import org.nlogo.nvm.{ Activation, Instruction, EngineException, Context, Procedure}
 import org.nlogo.plot.{ PlotExporter, PlotManager }
 import org.nlogo.workspace.AbstractWorkspace.HubNetManagerFactory
+
+import java.util.WeakHashMap
 
 import java.io.{IOException,PrintWriter}
 
@@ -15,7 +17,8 @@ import AbstractWorkspaceTraits._
 
 abstract class AbstractWorkspaceScala(private val _world: World, hubNetManagerFactory: HubNetManagerFactory)
   extends AbstractWorkspace(_world, hubNetManagerFactory)
-  with Plotting with Exporting with Evaluating with APIConformant {
+  with APIConformant with Benchmarking with Checksums
+  with Evaluating with Exporting with Plotting {
 
   var previewCommands: PreviewCommands = PreviewCommands.Default
 
@@ -220,34 +223,93 @@ object AbstractWorkspaceTraits {
       evaluator.runCompiledCommands(owner, procedure)
     def runCompiledReporter(owner: JobOwner, procedure: Procedure): AnyRef =
       evaluator.runCompiledReporter(owner, procedure)
+
     @throws(classOf[CompilerException])
     def readFromString(string: String): AnyRef =
       evaluator.readFromString(string)
+
+    val defaultOwner =
+      new SimpleJobOwner(getClass.getSimpleName, world.mainRNG, AgentKind.Observer)
+
+    // Members declared in org.nlogo.api.Controllable
+    def command(source: String): Unit = {
+      evaluator.evaluateCommands(defaultOwner, source, world.observers, true)
+      if (lastLogoException != null) {
+        val ex = lastLogoException
+        lastLogoException_=(null)
+        throw ex
+      }
+    }
+
+    def report(source: String): AnyRef = {
+      val result = evaluator.evaluateReporter(defaultOwner, source, world.observers)
+      if (lastLogoException != null) {
+        val ex = lastLogoException
+        lastLogoException_=(null)
+        throw ex
+      }
+      result
+    }
+  }
+
+  trait Benchmarking { this: AbstractWorkspace =>
+    override def benchmark(minTime: Int, maxTime: Int) {
+      new Thread("__bench") {
+        override def run() {
+          Benchmarker.benchmark(
+            Benchmarking.this, minTime, maxTime)
+        }}.start()
+    }
+  }
+
+  trait Checksums { this: AbstractWorkspace =>
+    override def worldChecksum =
+      Checksummer.calculateWorldChecksum(this)
+    override def graphicsChecksum =
+      Checksummer.calculateGraphicsChecksum(this)
   }
 
   trait APIConformant { this: AbstractWorkspace =>
-    // Members declared in org.nlogo.api.Controllable
-    def command(source: String): Unit = ???
-    def report(source: String): AnyRef = ???
-
     // Members declared in org.nlogo.api.ViewSettings
-    def drawSpotlight: Boolean = ???
-    def fontSize: Int = ???
-    def perspective: org.nlogo.api.Perspective = ???
-    def renderPerspective: Boolean = ???
-    def viewHeight: Double = ???
-    def viewOffsetX: Double = ???
-    def viewOffsetY: Double = ???
-    def viewWidth: Double = ???
+    def drawSpotlight: Boolean = true
+    private var _fontSize = 13
+    def fontSize = _fontSize
+    def fontSize(i: Int) { _fontSize = i }
+    def perspective: org.nlogo.api.Perspective = world.observer.perspective
+    def renderPerspective: Boolean = true
+    def viewHeight: Double = world.patchSize * world.worldHeight
+    def viewOffsetX: Double = world.patchSize * world.followOffsetX
+    def viewOffsetY: Double = world.patchSize * world.followOffsetY
+    def viewWidth: Double = world.patchSize * world.worldWidth
 
     // Members declared in org.nlogo.api.Workspace
-    def benchmark(minTime: Int,maxTime: Int): Unit = ???
-    def graphicsChecksum: String = ???
-    def openModel(model: org.nlogo.core.Model): Unit = ???
-    override def outputObject(obj: AnyRef,owner: AnyRef,addNewline: Boolean,readable: Boolean,destination: org.nlogo.api.OutputDestination): Unit = ???
-
     def previewCommandsString: String = ???
-    def renderer: org.nlogo.api.RendererInterface = ???
-    def worldChecksum: String = ???
+
+    def outputObject(obj: AnyRef,
+      owner: AnyRef,
+      addNewline: Boolean,
+      readable: Boolean,
+      destination: OutputDestination): Unit = {
+        val caption = owner match {
+          case a: Agent => Dump.logoObject(owner)
+          case _        => ""
+        }
+        val message = ((owner match {
+          case a: Agent      => ""
+          case _ if readable => " "
+        }) + Dump.logoObject(obj, readable, false))
+        val oo = new OutputObject(caption, message, addNewline, false);
+        destination match {
+          case OutputDestination.File => fileManager.writeOutputObject(oo)
+          case _ =>
+            sendOutput(oo, destination == OutputDestination.OutputArea)
+        }
+    }
+
+    // def openModel(model: org.nlogo.core.Model): Unit = ???
+    // def renderer: org.nlogo.api.RendererInterface = ???
+
+    // for _thunkdidfinish (says that a thunk finished running without having stop called)
+    val completedActivations: WeakHashMap[Activation, Boolean]  = new WeakHashMap()
   }
 }

@@ -120,8 +120,6 @@ with org.nlogo.api.ViewSettings {
 
   AbstractWorkspace.isApplet(false)
   world.trailDrawer(renderer.trailDrawer)
-  val defaultOwner =
-    new SimpleJobOwner("HeadlessWorkspace", world.mainRNG, AgentKind.Observer)
 
   /**
    * Has a model been opened in this workspace?
@@ -248,10 +246,6 @@ with org.nlogo.api.ViewSettings {
     renderer.resetCache(patchSize)
     clearDrawing()
   }
-
-  private var _fontSize = 13
-  override def fontSize = _fontSize
-  override def fontSize(i: Int) { _fontSize = i }
 
   private var _frameRate = 0.0
   override def frameRate = _frameRate

@@ -8,8 +8,7 @@ import java.io.IOException
 import org.nlogo.core.CompilerException
 import org.nlogo.api.LogoException
 import org.nlogo.api.Version
-import org.nlogo.workspace.ModelsLibrary
-import org.nlogo.workspace.PreviewCommandsRunner
+import org.nlogo.workspace.{ Checksummer, ModelsLibrary, PreviewCommandsRunner }
 
 import javax.imageio.ImageIO
 
