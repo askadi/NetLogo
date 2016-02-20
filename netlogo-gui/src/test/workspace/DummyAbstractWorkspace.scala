@@ -68,4 +68,7 @@ extends AbstractWorkspaceScala(
   override def compiler: CompilerInterface = unsupported
   override def logCustomMessage(msg: String): Unit = unsupported
   override def logCustomGlobals(nameValuePairs: Seq[(String, String)]): Unit = unsupported
+
+  def openModel(model: org.nlogo.core.Model): Unit = unsupported
+  def renderer: org.nlogo.api.RendererInterface = unsupported
 }

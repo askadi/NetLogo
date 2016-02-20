@@ -11,7 +11,8 @@ import org.nlogo.api.{ Version, RendererInterface,
                        WorldDimensions3D, AggregateManagerInterface,
                        ModelReader, LogoException, SimpleJobOwner,
                        HubNetInterface, CommandRunnable, ReporterRunnable }
-import org.nlogo.core.{ AgentKind, CompilerException, WorldDimensions, UpdateMode}
+import org.nlogo.core.{ AgentKind, CompilerException, Model, UpdateMode, WorldDimensions, model => coremodel },
+  coremodel.{ ModelReader => CoreModelReader }
 import org.nlogo.agent.{ World, World3D }
 import org.nlogo.nvm.{ LabInterface,
                        Workspace, DefaultCompilerServices, CompilerInterface }
@@ -531,7 +532,7 @@ with org.nlogo.api.ViewSettings {
    */
   override def openString(modelContents: String) {
     fileManager.handleModelChange()
-    new HeadlessModelOpener(this).openFromMap(ModelReader.parseModel(modelContents))
+    openFromSource(modelContents)
   }
 
   /**
@@ -542,7 +543,11 @@ with org.nlogo.api.ViewSettings {
    *               in the same format as it would be stored in a file.
    */
   def openFromSource(source: String) {
-    new HeadlessModelOpener(this).openFromMap(ModelReader.parseModel(source))
+    openModel(CoreModelReader.parseModel(source, compiler.compilerUtilities))
+  }
+
+  def openModel(model: Model): Unit = {
+    new HeadlessModelOpener(this).openFromModel(model)
   }
 
   /**

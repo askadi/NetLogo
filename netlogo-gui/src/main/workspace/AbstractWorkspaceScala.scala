@@ -10,6 +10,8 @@ import org.nlogo.plot.{ PlotExporter, PlotManager }
 import org.nlogo.workspace.AbstractWorkspace.HubNetManagerFactory
 
 import java.util.WeakHashMap
+import java.net.URL
+import java.io.File
 
 import java.io.{IOException,PrintWriter}
 
@@ -18,7 +20,10 @@ import AbstractWorkspaceTraits._
 abstract class AbstractWorkspaceScala(private val _world: World, hubNetManagerFactory: HubNetManagerFactory)
   extends AbstractWorkspace(_world, hubNetManagerFactory)
   with APIConformant with Benchmarking with Checksums
-  with Evaluating with Exporting with Plotting {
+  with Evaluating with ExtendableWorkspaceMethods with Exporting
+  with Plotting {
+
+  def compilerTestingMode: Boolean;
 
   var previewCommands: PreviewCommands = PreviewCommands.Default
 
@@ -306,10 +311,29 @@ object AbstractWorkspaceTraits {
         }
     }
 
-    // def openModel(model: org.nlogo.core.Model): Unit = ???
-    // def renderer: org.nlogo.api.RendererInterface = ???
-
     // for _thunkdidfinish (says that a thunk finished running without having stop called)
     val completedActivations: WeakHashMap[Activation, Boolean]  = new WeakHashMap()
+  }
+
+  trait ExtendableWorkspaceMethods { this: AbstractWorkspace =>
+    /**
+     * attaches the current model directory to a relative path, if necessary.
+     * If filePath is an absolute path, this method simply returns it.
+     * If it's a relative path, then the current model directory is prepended
+     * to it. If this is a new model, the user's platform-dependent home
+     * directory is prepended instead.
+     */
+    @throws(classOf[java.net.MalformedURLException])
+    def attachModelDir(filePath: String): String = {
+      if (AbstractWorkspace.isApplet || new File(filePath).isAbsolute)
+        filePath
+      else {
+        val path = Option(getModelPath).getOrElse(
+          System.getProperty("user.home") + File.separatorChar + "dummy.txt")
+        val urlForm = new URL(new File(path).toURI.toURL, filePath)
+
+        new File(urlForm.getFile()).getAbsolutePath()
+      }
+    }
   }
 }

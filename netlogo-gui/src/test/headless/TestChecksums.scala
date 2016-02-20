@@ -3,6 +3,7 @@
 package org.nlogo.headless
 
 import org.nlogo.api.Version
+import org.nlogo.workspace.Checksummer
 import java.util.concurrent.{Executors, TimeUnit}
 import org.nlogo.util.SlowTest
 import org.scalatest._

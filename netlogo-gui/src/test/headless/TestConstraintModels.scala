@@ -37,9 +37,9 @@ class TestConstraintModels extends AbstractTestModels {
 
   testModel("Chooser Constraint",
     Model(
-      Chooser(name = "foo", choices = List(1, 2, 3, 4, 5), index = 0),
+      Chooser(name = "foo", choices = List(1, 2, 3, 4, 5).map(i => Double.box(i)), index = 0),
       Chooser(name = "bar", choices = List("a", "b", "c", "d"), index = 3),
-      Chooser(name = "mix", choices = List(12, "aaa", 34, "bbb", 56), index = 0))) {
+      Chooser(name = "mix", choices = List(Double.box(12), "aaa", Double.box(34), "bbb", Double.box(56)), index = 0))) {
 
     reporter("foo") -> 1d
     reporter("bar") -> "d"

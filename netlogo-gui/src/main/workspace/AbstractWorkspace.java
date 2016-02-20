@@ -129,11 +129,6 @@ public abstract strictfp class AbstractWorkspace
   }
 
   /**
-   * Internal use only.
-   */
-  public abstract boolean compilerTestingMode();
-
-  /**
    * Shuts down the background thread associated with this workspace,
    * allowing resources to be freed.
    */
@@ -237,31 +232,6 @@ public abstract strictfp class AbstractWorkspace
         fileManager.setPrefix(modelDir);
       }
     }
-  }
-
-  /**
-   * attaches the current model directory to a relative path, if necessary.
-   * If filePath is an absolute path, this method simply returns it.
-   * If it's a relative path, then the current model directory is prepended
-   * to it. If this is a new model, the user's platform-dependent home
-   * directory is prepended instead.
-   */
-  public String attachModelDir(String filePath)
-      throws java.net.MalformedURLException {
-    if (isApplet() || new java.io.File(filePath).isAbsolute()) {
-      return filePath;
-    }
-    String path = getModelPath();
-    if (path == null) {
-      path = System.getProperty("user.home")
-          + java.io.File.separatorChar + "dummy.txt";
-    }
-
-    java.net.URL urlForm =
-        new java.net.URL
-            (toURL(new java.io.File(path)), filePath);
-
-    return new java.io.File(urlForm.getFile()).getAbsolutePath();
   }
 
   // for 4.1 we have too much fragile, difficult-to-understand,
@@ -730,8 +700,6 @@ public abstract strictfp class AbstractWorkspace
   public scala.collection.immutable.Map<String, org.nlogo.core.ProcedureSyntax> findProcedurePositions(String source) {
     return compiler().findProcedurePositions(source);
   }
-
-  public abstract org.nlogo.nvm.CompilerInterface compiler();
 
   public LogoException lastLogoException() {
     return null;

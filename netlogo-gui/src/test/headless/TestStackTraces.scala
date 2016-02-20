@@ -57,7 +57,7 @@ class TestStackTraces extends AbstractTestModels {
 
   trait CodeType {
     val procName: String
-    def plot(code: String): Plot
+    def plot(code: String): org.nlogo.core.Plot
   }
   object PlotSetup extends CodeType {
     val procName = "plot 'p' setup code"
