@@ -52,21 +52,17 @@ trait ModelCreator {
 
   object Model {
     def apply(widgets: core.Widget*): Model =
-      new Model(code = "", widgets = widgets.toList)
+      apply(code = "", widgets: _*)
+
     def apply(code: String,widgets: core.Widget*): Model =
-      new Model(code = code, widgets = widgets.toList)
+      if (widgets.exists(_.isInstanceOf[core.View]))
+        new Model(code = code, widgets = widgets.toList)
+      else
+        new Model(code = code, widgets = core.View() :: widgets.toList)
   }
 
   class Model(code: String, widgets: List[core.Widget]) extends core.Model(code = code, widgets = widgets) {
-    /*
-    val literalParser = new core.LiteralParser {
-      def readFromString(s: String): AnyRef = s
-      def readNumberFromString(source: String): AnyRef = NumberParser.parse.right.get
-    }
-    */
-
-   override def toString = core.model.ModelReader.formatModel(this, null)
-    // new org.nlogo.parse.LiteralParser(org.nlogo.parse.NullImportHandler))
+    override def toString = core.model.ModelReader.formatModel(this, null)
   }
 
   val counter = Iterator.from(0)

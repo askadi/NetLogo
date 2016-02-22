@@ -302,6 +302,7 @@ object AbstractWorkspaceTraits {
         val message = ((owner match {
           case a: Agent      => ""
           case _ if readable => " "
+          case _             => ""
         }) + Dump.logoObject(obj, readable, false))
         val oo = new OutputObject(caption, message, addNewline, false);
         destination match {

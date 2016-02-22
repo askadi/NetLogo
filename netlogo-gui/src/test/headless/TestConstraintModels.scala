@@ -5,7 +5,7 @@ package org.nlogo.headless
 // This is in org.nlogo.headless and not org.nlogo.workspace because it uses workspace.open(), which
 // (at present!) DummyAbstractWorkspace does not support. - ST 4/8/08
 
-import org.nlogo.agent.{BooleanConstraint, ConstantSliderConstraint, DynamicSliderConstraint, SliderConstraint}
+import org.nlogo.agent.{BooleanConstraint, ConstantSliderConstraint, DynamicSliderConstraint, NumericConstraint, SliderConstraint}
 
 class TestConstraintModels extends AbstractTestModels {
 
@@ -155,7 +155,7 @@ class TestConstraintModels extends AbstractTestModels {
 
     observer>>"setup"
     val index = world.observerOwnsIndexOf("X-LOC")
-    val con = world.observer().variableConstraint(index).asInstanceOf[SliderConstraint]
+    val con = world.observer().variableConstraint(index).asInstanceOf[NumericConstraint]
 
     // the maximum should be 40
     var coerced = con.coerceValue(Double.box(41)).asInstanceOf[java.lang.Double]

@@ -40,8 +40,10 @@ class HeadlessModelOpener(ws: HeadlessWorkspace) {
     val dialect = if (Version.is3D) NetLogoThreeDDialect else NetLogoLegacyDialect
 
     // read system dynamics modeler diagram
-    val sdmLines = model.otherSections("org.nlogo.sdm")
-    if (!sdmLines.isEmpty) ws.aggregateManager.load(sdmLines.mkString("", "\n", "\n"), ws)
+    val sdmLines = model.otherSections.get("org.nlogo.sdm").flatMap(lines => if (lines.isEmpty) None else Some(lines))
+    sdmLines.foreach { (lines: List[String]) =>
+      ws.aggregateManager.load(lines.mkString("", "\n", "\n"), ws)
+    }
 
     // read procedures, compile them.
     val results = {
@@ -62,7 +64,9 @@ class HeadlessModelOpener(ws: HeadlessWorkspace) {
     // parse turtle and link shapes, updating the workspace.
     attachWorldShapes(model.turtleShapes, model.linkShapes)
 
-    ws.getHubNetManager.load(model.otherSections("org.nlogo.hubnet.client").toArray, model.version)
+    model.otherSections.get("org.nlogo.hubnet.client").foreach { lines =>
+      ws.getHubNetManager.load(lines.toArray, model.version)
+    }
 
     ws.init()
     ws.world.program(results.program)

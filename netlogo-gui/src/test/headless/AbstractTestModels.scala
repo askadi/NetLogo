@@ -65,7 +65,9 @@ trait AbstractTestModels extends FunSuite with ModelCreator {
     // very useful, do not just remove.
     // println(model.toString)
     // println(".")
-    run(ws => ws.openFromSource(model.toString)){ f }
+    // TODO, why is this different?
+    // run(ws => ws.openFromSource(model.toString)){ f }
+    run(ws => ws.openModel(model)){ f }
   }
   // lods the model from the given file, and runs it in a new workspace
   def runModelFromFile(path: String)(f: => Unit) = run(ws => ws.open(path)){ f }
